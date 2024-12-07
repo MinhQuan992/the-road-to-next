@@ -1,6 +1,6 @@
 import Link from "next/link";
 import Heading from "@/components/heading";
-import { ticketsPath } from "@/utils/paths";
+import { ticketsPath } from "@/paths";
 
 const HomePage = async () => {
   return (
