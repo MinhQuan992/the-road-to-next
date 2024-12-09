@@ -1,20 +1,20 @@
+import { Suspense } from "react";
 import Heading from "@/components/heading";
-import { initialTickets } from "@/data";
-import TicketItem from "@/features/ticket/components/ticket-item";
+import Spinner from "@/components/spinner";
+import TicketList from "@/features/ticket/components/ticket-list";
 
-const TicketsPage = async () => {
+const TicketsPage = () => {
   return (
     <div className="flex flex-col flex-1 gap-y-8">
       <Heading
         title="Tickets Page"
         description="All your tickets at one place"
       />
-
-      <div className="flex flex-col flex-1 items-center gap-y-4 animate-fade-in-from-top">
-        {initialTickets.map((ticket) => (
-          <TicketItem key={ticket.id} ticket={ticket} />
-        ))}
-      </div>
+      {/* <ErrorBoundary fallback={<Placeholder label="Something went wrong" />}> */}
+      <Suspense fallback={<Spinner />}>
+        <TicketList />
+      </Suspense>
+      {/* </ErrorBoundary> */}
     </div>
   );
 };
