@@ -1,7 +1,9 @@
 import { Suspense } from "react";
 import Heading from "@/components/heading";
 import Spinner from "@/components/spinner";
+import CardCompact from "@/features/ticket/components/card-compact";
 import TicketList from "@/features/ticket/components/ticket-list";
+import TicketUpsertForm from "@/features/ticket/components/ticket-upsert-form";
 
 // Opt-out static rendering, if not, the ticket list is kept static and does not reflect any changes in Production mode
 // when the data changes
@@ -20,6 +22,12 @@ const TicketsPage = () => {
       <Heading
         title="Tickets Page"
         description="All your tickets at one place"
+      />
+      <CardCompact
+        title="Create Ticket"
+        description="A new ticket will be created"
+        className="w-full max-w-[420px] self-center"
+        content={<TicketUpsertForm />}
       />
       {/* <ErrorBoundary fallback={<Placeholder label="Something went wrong" />}> */}
       <Suspense fallback={<Spinner />}>
