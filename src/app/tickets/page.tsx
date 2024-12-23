@@ -1,6 +1,5 @@
 import { Suspense } from "react";
 import Heading from "@/components/heading";
-import RedirectToast from "@/components/redirect-toast";
 import Spinner from "@/components/spinner";
 import CardCompact from "@/features/ticket/components/card-compact";
 import TicketList from "@/features/ticket/components/ticket-list";
@@ -19,26 +18,23 @@ import TicketUpsertForm from "@/features/ticket/components/ticket-upsert-form";
 
 const TicketsPage = () => {
   return (
-    <>
-      <div className="flex flex-col flex-1 gap-y-8">
-        <Heading
-          title="Tickets Page"
-          description="All your tickets at one place"
-        />
-        <CardCompact
-          title="Create Ticket"
-          description="A new ticket will be created"
-          className="w-full max-w-[420px] self-center"
-          content={<TicketUpsertForm />}
-        />
-        {/* <ErrorBoundary fallback={<Placeholder label="Something went wrong" />}> */}
-        <Suspense fallback={<Spinner />}>
-          <TicketList />
-        </Suspense>
-        {/* </ErrorBoundary> */}
-      </div>
-      <RedirectToast />
-    </>
+    <div className="flex flex-col flex-1 gap-y-8">
+      <Heading
+        title="Tickets Page"
+        description="All your tickets at one place"
+      />
+      <CardCompact
+        title="Create Ticket"
+        description="A new ticket will be created"
+        className="w-full max-w-[420px] self-center"
+        content={<TicketUpsertForm />}
+      />
+      {/* <ErrorBoundary fallback={<Placeholder label="Something went wrong" />}> */}
+      <Suspense fallback={<Spinner />}>
+        <TicketList />
+      </Suspense>
+      {/* </ErrorBoundary> */}
+    </div>
   );
 };
 
