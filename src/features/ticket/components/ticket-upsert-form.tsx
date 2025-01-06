@@ -1,7 +1,10 @@
 "use client";
 
 import { Ticket } from "@prisma/client";
-import { useActionState } from "react";
+import { useActionState, useRef } from "react";
+import DatePicker, {
+  ImperativeHandleRefFromDatePicker,
+} from "@/components/date-picker";
 import FieldError from "@/components/form/field-error";
 import Form from "@/components/form/form";
 import SubmitButton from "@/components/form/submit-button";
@@ -9,9 +12,8 @@ import { EMPTY_ACTION_STATE } from "@/components/form/utils/to-action-state";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
-import { upsertTicket } from "../actions/upsert-ticket";
 import { fromCent } from "@/utils/currency";
-import DatePicker from "@/components/date-picker";
+import { upsertTicket } from "../actions/upsert-ticket";
 
 type TicketUpsertFormProps = {
   ticket?: Ticket;
@@ -23,8 +25,19 @@ const TicketUpsertForm = ({ ticket }: TicketUpsertFormProps) => {
     EMPTY_ACTION_STATE
   );
 
+  const datePickerImperativeHandleRef =
+    useRef<ImperativeHandleRefFromDatePicker>(null);
+
+  const handleSuccess = () => {
+    datePickerImperativeHandleRef.current?.reset();
+  };
+
   return (
-    <Form formAction={formAction} actionState={actionState}>
+    <Form
+      formAction={formAction}
+      actionState={actionState}
+      onSuccess={handleSuccess}
+    >
       <Label htmlFor="title">Title</Label>
       <Input
         id="title"
@@ -50,12 +63,14 @@ const TicketUpsertForm = ({ ticket }: TicketUpsertFormProps) => {
         <div className="w-1/2">
           <Label htmlFor="deadline">Deadline</Label>
           <DatePicker
+            key={actionState.timestamp}
             id="deadline"
             name="deadline"
             defaultValue={
               (actionState.payload?.get("deadline") as string) ??
               ticket?.deadline
             }
+            imperativeHandleRef={datePickerImperativeHandleRef}
           />
           <FieldError actionState={actionState} name="deadline" />
         </div>

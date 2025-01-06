@@ -2,7 +2,7 @@
 
 import { format } from "date-fns";
 import { Calendar as CalendarIcon } from "lucide-react";
-import { useState } from "react";
+import { useImperativeHandle, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Calendar } from "@/components/ui/calendar";
 import {
@@ -11,21 +11,39 @@ import {
   PopoverTrigger,
 } from "@/components/ui/popover";
 
+export type ImperativeHandleRefFromDatePicker = { reset: () => void } | null;
+
 type DatePickerProps = {
   id: string;
   name: string;
   defaultValue?: string;
+  imperativeHandleRef?: React.RefObject<ImperativeHandleRefFromDatePicker>;
 };
 
-const DatePicker = ({ id, name, defaultValue }: DatePickerProps) => {
+const DatePicker = ({
+  id,
+  name,
+  defaultValue,
+  imperativeHandleRef,
+}: DatePickerProps) => {
   const [date, setDate] = useState<Date | undefined>(
     defaultValue ? new Date(defaultValue) : new Date()
   );
+  const [open, setOpen] = useState(false);
+
+  useImperativeHandle(imperativeHandleRef, () => ({
+    reset: () => setDate(new Date()),
+  }));
+
+  const handleSelect = (selectedDate: Date | undefined) => {
+    setDate(selectedDate);
+    setOpen(false);
+  };
 
   const formattedStringDate = date ? format(date, "yyyy-MM-dd") : "";
 
   return (
-    <Popover>
+    <Popover open={open} onOpenChange={setOpen}>
       <PopoverTrigger className="w-full" id={id} asChild>
         <Button
           variant={"outline"}
@@ -40,7 +58,7 @@ const DatePicker = ({ id, name, defaultValue }: DatePickerProps) => {
         <Calendar
           mode="single"
           selected={date}
-          onSelect={setDate}
+          onSelect={handleSelect}
           initialFocus
         />
       </PopoverContent>
