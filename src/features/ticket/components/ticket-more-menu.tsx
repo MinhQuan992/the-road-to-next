@@ -4,6 +4,7 @@ import { Ticket, TicketStatus } from "@prisma/client";
 import { LucideTrash } from "lucide-react";
 import { ReactNode } from "react";
 import { toast } from "sonner";
+import useConfirmDialog from "@/components/confirm-dialog";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -13,6 +14,7 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import { deleteTicket } from "../actions/delete-ticket";
 import { updateTicketStatus } from "../actions/update-ticket-status";
 import { TICKET_STATUS_LABEL } from "../constants";
 
@@ -22,6 +24,16 @@ type TicketMoreMenuProps = {
 };
 
 const TicketMoreMenu = ({ ticket, trigger }: TicketMoreMenuProps) => {
+  const [deleteButton, deleteDialog] = useConfirmDialog({
+    action: deleteTicket.bind(null, ticket.id),
+    trigger: (
+      <DropdownMenuItem>
+        <LucideTrash />
+        <span>Delete</span>
+      </DropdownMenuItem>
+    ),
+  });
+
   const handleUpdateTicketStatus = async (value: string) => {
     const promise = updateTicketStatus(ticket.id, value as TicketStatus);
     toast.promise(promise, {
@@ -50,22 +62,18 @@ const TicketMoreMenu = ({ ticket, trigger }: TicketMoreMenuProps) => {
     </DropdownMenuRadioGroup>
   );
 
-  const deleteButton = (
-    <DropdownMenuItem>
-      <LucideTrash />
-      <span>Delete</span>
-    </DropdownMenuItem>
-  );
-
   return (
-    <DropdownMenu>
-      <DropdownMenuTrigger asChild>{trigger}</DropdownMenuTrigger>
-      <DropdownMenuContent className="w-56" side="right">
-        {ticketStatusRadioGroupItems}
-        <DropdownMenuSeparator />
-        {deleteButton}
-      </DropdownMenuContent>
-    </DropdownMenu>
+    <>
+      {deleteDialog}
+      <DropdownMenu>
+        <DropdownMenuTrigger asChild>{trigger}</DropdownMenuTrigger>
+        <DropdownMenuContent className="w-56" side="right">
+          {ticketStatusRadioGroupItems}
+          <DropdownMenuSeparator />
+          {deleteButton}
+        </DropdownMenuContent>
+      </DropdownMenu>
+    </>
   );
 };
 
