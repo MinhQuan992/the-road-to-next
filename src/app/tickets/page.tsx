@@ -1,9 +1,12 @@
+import { redirect } from "next/navigation";
 import { Suspense } from "react";
 import Heading from "@/components/heading";
 import Spinner from "@/components/spinner";
+import { getAuth } from "@/features/auth/queries/get-auth";
 import CardCompact from "@/features/ticket/components/card-compact";
 import TicketList from "@/features/ticket/components/ticket-list";
 import TicketUpsertForm from "@/features/ticket/components/ticket-upsert-form";
+import { signInPath } from "@/paths";
 
 // Opt-out static rendering, if not, the ticket list is kept static and does not reflect any changes in Production mode
 // when the data changes
@@ -16,7 +19,13 @@ import TicketUpsertForm from "@/features/ticket/components/ticket-upsert-form";
 // or on-demand caching:
 // `revalidatePath()` in server action
 
-const TicketsPage = () => {
+const TicketsPage = async () => {
+  const { user } = await getAuth();
+
+  if (!user) {
+    redirect(signInPath());
+  }
+
   return (
     <div className="flex flex-col flex-1 gap-y-8">
       <Heading

@@ -13,8 +13,9 @@ const TicketPage = async ({ params }: TicketPageProps) => {
   const { ticketId } = await params;
 
   const ticket = await getTicket(ticketId);
+  const isTicketFound = !!ticket;
 
-  if (!ticket) {
+  if (!isTicketFound) {
     notFound();
   }
 
