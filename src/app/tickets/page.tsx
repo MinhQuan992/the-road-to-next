@@ -28,10 +28,7 @@ const TicketsPage = async () => {
 
   return (
     <div className="flex flex-col flex-1 gap-y-8">
-      <Heading
-        title="Tickets Page"
-        description="All your tickets at one place"
-      />
+      <Heading title="My Tickets" description="All your tickets at one place" />
       <CardCompact
         title="Create Ticket"
         description="A new ticket will be created"
@@ -40,7 +37,7 @@ const TicketsPage = async () => {
       />
       {/* <ErrorBoundary fallback={<Placeholder label="Something went wrong" />}> */}
       <Suspense fallback={<Spinner />}>
-        <TicketList />
+        <TicketList userId={user.id} />
       </Suspense>
       {/* </ErrorBoundary> */}
     </div>
