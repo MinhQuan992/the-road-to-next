@@ -1,10 +1,10 @@
 "use client";
 
 import { useState } from "react";
+import { useAuth } from "@/features/auth/hooks/use-auth";
 import { cn } from "@/lib/utils";
 import { navItems } from "../constants";
 import { SidebarItem } from "./sidebar-item";
-import { useAuth } from "@/features/auth/hooks/use-auth";
 
 const Sidebar = () => {
   const { user, isFetched } = useAuth();
