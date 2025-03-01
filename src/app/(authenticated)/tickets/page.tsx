@@ -6,6 +6,7 @@ import { getAuth } from "@/features/auth/queries/get-auth";
 import CardCompact from "@/features/ticket/components/card-compact";
 import TicketList from "@/features/ticket/components/ticket-list";
 import TicketUpsertForm from "@/features/ticket/components/ticket-upsert-form";
+import { SearchParams } from "@/features/ticket/search-params";
 import { signInPath } from "@/paths";
 
 // Opt-out static rendering, if not, the ticket list is kept static and does not reflect any changes in Production mode
@@ -19,7 +20,11 @@ import { signInPath } from "@/paths";
 // or on-demand caching:
 // `revalidatePath()` in server action
 
-const TicketsPage = async () => {
+type TicketsPageProps = {
+  searchParams: Promise<SearchParams>;
+};
+
+const TicketsPage = async ({ searchParams }: TicketsPageProps) => {
   const { user } = await getAuth();
 
   if (!user) {
@@ -37,7 +42,7 @@ const TicketsPage = async () => {
       />
       {/* <ErrorBoundary fallback={<Placeholder label="Something went wrong" />}> */}
       <Suspense fallback={<Spinner />}>
-        <TicketList userId={user.id} />
+        <TicketList userId={user.id} searchParams={await searchParams} />
       </Suspense>
       {/* </ErrorBoundary> */}
     </div>
