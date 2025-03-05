@@ -1,3 +1,5 @@
+"use client";
+
 import clsx from "clsx";
 import {
   LucideMoreVertical,
@@ -13,8 +15,6 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { getAuth } from "@/features/auth/queries/get-auth";
-import { isOwner } from "@/features/auth/utils/is-owner";
 import { Comments } from "@/features/comment/components/comments";
 import { CommentWithMetadata } from "@/features/comment/types";
 import { ticketEditPath, ticketPath } from "@/paths";
@@ -29,11 +29,8 @@ type TicketItemProps = {
   comments?: CommentWithMetadata[];
 };
 
-const TicketItem = async ({ ticket, isDetail, comments }: TicketItemProps) => {
+const TicketItem = ({ ticket, isDetail, comments }: TicketItemProps) => {
   console.log("Where am I displayed? (TicketItem)");
-
-  const { user } = await getAuth();
-  const isTicketOwner = isOwner(user, ticket);
 
   const detailButton = (
     <Button variant="outline" size="icon" asChild>
@@ -43,7 +40,7 @@ const TicketItem = async ({ ticket, isDetail, comments }: TicketItemProps) => {
     </Button>
   );
 
-  const editButton = isTicketOwner ? (
+  const editButton = ticket.isOwner ? (
     <Button variant="outline" size="icon" asChild>
       <Link prefetch href={ticketEditPath(ticket.id)}>
         <LucidePencil className="!w-5 !h-5" />
@@ -51,7 +48,7 @@ const TicketItem = async ({ ticket, isDetail, comments }: TicketItemProps) => {
     </Button>
   ) : null;
 
-  const moreMenuButton = isTicketOwner ? (
+  const moreMenuButton = ticket.isOwner ? (
     <TicketMoreMenu
       ticket={ticket}
       trigger={
