@@ -15,8 +15,6 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { Comments } from "@/features/comment/components/comments";
-import { CommentWithMetadata } from "@/features/comment/types";
 import { ticketEditPath, ticketPath } from "@/paths";
 import { fromCurrencyToCents } from "@/utils/currency";
 import { TICKET_ICON } from "../constants";
@@ -26,7 +24,7 @@ import TicketMoreMenu from "./ticket-more-menu";
 type TicketItemProps = {
   ticket: TicketWithMetadata;
   isDetail?: boolean;
-  comments?: CommentWithMetadata[];
+  comments?: React.ReactNode;
 };
 
 const TicketItem = ({ ticket, isDetail, comments }: TicketItemProps) => {
@@ -108,20 +106,7 @@ const TicketItem = ({ ticket, isDetail, comments }: TicketItemProps) => {
           )}
         </div>
       </div>
-
-      {isDetail ? (
-        // <Suspense
-        //   fallback={
-        //     <div className="flex flex-col gap-y-4">
-        //       <Skeleton className="h-[250px] w-full" />
-        //       <Skeleton className="h-[80px] ml-8" />
-        //       <Skeleton className="h-[80px] ml-8" />
-        //     </div>
-        //   }
-        // >
-        <Comments ticketId={ticket.id} comments={comments} />
-      ) : // </Suspense>
-      null}
+      {comments}
     </div>
   );
 };

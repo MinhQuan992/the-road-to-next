@@ -1,6 +1,7 @@
 import { Separator } from "@radix-ui/react-separator";
 import { notFound } from "next/navigation";
 import { Breadcrumbs } from "@/components/breadcrumb";
+import { Comments } from "@/features/comment/components/comments";
 import { getComments } from "@/features/comment/queries/get-comments";
 import TicketItem from "@/features/ticket/components/ticket-item";
 import { getTicket } from "@/features/ticket/queries/get-ticket";
@@ -40,7 +41,11 @@ const TicketPage = async ({ params }: TicketPageProps) => {
       <Separator />
 
       <div className="flex justify-center animate-fade-from-top">
-        <TicketItem ticket={ticket} isDetail comments={comments} />
+        <TicketItem
+          ticket={ticket}
+          isDetail
+          comments={<Comments ticketId={ticket.id} comments={comments} />}
+        />
       </div>
     </div>
   );
