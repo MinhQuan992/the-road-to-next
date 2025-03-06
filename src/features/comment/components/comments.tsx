@@ -1,5 +1,6 @@
 "use client";
 
+import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import CardCompact from "@/features/ticket/components/card-compact";
 import { getComments } from "../queries/get-comments";
@@ -10,15 +11,36 @@ import { CommentItem } from "./comment-item";
 
 type CommentsProps = {
   ticketId: string;
-  comments?: CommentWithMetadata[];
+  paginatedComments: {
+    list: CommentWithMetadata[];
+    metadata: { count: number; hasNextPage: boolean };
+  };
 };
 
-const Comments = ({ ticketId, comments = [] }: CommentsProps) => {
+const Comments = ({ ticketId, paginatedComments }: CommentsProps) => {
   console.log("Where am I displayed? (Comments)");
 
+  const [comments, setComments] = useState(paginatedComments.list);
+  const [metadata, setMetadata] = useState(paginatedComments.metadata);
+
   const handleMore = async () => {
-    const result = await getComments(ticketId);
-    console.log(result);
+    const morePaginatedComments = await getComments(ticketId, comments.length);
+    const moreComments = morePaginatedComments.list;
+
+    setComments([...comments, ...moreComments]);
+    setMetadata(morePaginatedComments.metadata);
+  };
+
+  const handleDeleteComment = (id: string) => {
+    setComments((prevComments) =>
+      prevComments.filter((comment) => comment.id !== id)
+    );
+  };
+
+  const handleCreateComment = (comment: CommentWithMetadata | undefined) => {
+    if (!comment) return;
+
+    setComments((prevComments) => [comment, ...prevComments]);
   };
 
   return (
@@ -26,7 +48,12 @@ const Comments = ({ ticketId, comments = [] }: CommentsProps) => {
       <CardCompact
         title="Create Comment"
         description="A new comment will be created"
-        content={<CommentCreateForm ticketId={ticketId} />}
+        content={
+          <CommentCreateForm
+            ticketId={ticketId}
+            onCreateComment={handleCreateComment}
+          />
+        }
       />
       <div className="flex flex-col gap-y-2 ml-8">
         {comments.map((comment) => (
@@ -35,16 +62,24 @@ const Comments = ({ ticketId, comments = [] }: CommentsProps) => {
             comment={comment}
             buttons={[
               ...(comment.isOwner
-                ? [<CommentDeleteButton key="0" id={comment.id} />]
+                ? [
+                    <CommentDeleteButton
+                      key="0"
+                      id={comment.id}
+                      onDeleteComment={handleDeleteComment}
+                    />,
+                  ]
                 : []),
             ]}
           />
         ))}
       </div>
       <div className="flex flex-col justify-center ml-8">
-        <Button variant="ghost" onClick={handleMore}>
-          More
-        </Button>
+        {metadata.hasNextPage && (
+          <Button onClick={handleMore} variant="outline" size="sm">
+            Load More
+          </Button>
+        )}
       </div>
     </>
   );

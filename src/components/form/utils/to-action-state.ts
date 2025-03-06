@@ -1,11 +1,13 @@
 import { z } from "zod";
 
-export type ActionState = {
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+export type ActionState<T = any> = {
   status?: "SUCCESS" | "ERROR";
   message: string;
   fieldErrors: Record<string, string[] | undefined>;
   payload?: FormData;
   timestamp: number;
+  data?: T;
 };
 
 export const EMPTY_ACTION_STATE: ActionState = {
@@ -50,7 +52,8 @@ export const formErrorToActionState = (
 export const toActionState = (
   status: ActionState["status"],
   message: string,
-  formData?: FormData
+  formData?: FormData,
+  data?: unknown
 ): ActionState => {
   return {
     status,
@@ -58,5 +61,6 @@ export const toActionState = (
     fieldErrors: {},
     payload: formData,
     timestamp: Date.now(),
+    data,
   };
 };
